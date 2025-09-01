@@ -1,0 +1,35 @@
+name: Telegram Bot CI/CD
+
+# 🔹 Workflow kab run hoga
+on:
+  push:
+    branches: [ main ]  # Jab 'main' branch par naya code push ho
+  workflow_dispatch:   # Manual run button ke liye
+
+jobs:
+  build_and_run:
+    runs-on: ubuntu-latest  # Bot ko chalane ke liye ek virtual machine
+
+    steps:
+    - name: ⬇️ Checkout code
+      uses: actions/checkout@v4  # Repository ke code ko pull karein
+
+    - name: 🐍 Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'  # Python version jo aap use kar rahe hain
+
+    - name: 📦 Install dependencies
+      run: |
+        # Zaroori libraries install karein
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: ▶️ Run Telegram Bot
+      env:
+        TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+        GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      run: |
+        echo "Starting the Telegram bot..."
+        python bot.py
+        
